@@ -1,0 +1,127 @@
+1) Creating new engines:
+Engines myEngines (rightPlusPin, rightMinusPin, leftPlusPin, leftMinusPin);
+myEngines - The name of the pair of engines
+rightPlusPin - The penis linked to the right motor's + trigger by the thrust.
+The + motor trigger is the trigger that when connected to the motor, it moves forward.
+rightMinusPin - The penis linked to the motor's minus trigger.
+leftPlusPin - The penis linked to the plus motor of the left motor.
+leftMinusPin - The penis that is linked to the left motor's minus trigger.
+Important Note: The selected pins must be pins marked with a curl !!
+(PWM)
+The pins marked in the Arduino Uno Curl are:
+3,5,6,9,10,11,13
+
+2) Drive (leftSpeed, rightSpeed)
+This method drives the engines.
+leftSpeed ​​- The speed at which the left engine will run
+rightSpeed ​​- The speed at which the right engine is operated.
+Speed ​​is in percentage.
+Negative speed transfer will prevent the engine from going back.
+myEngines.Drive (100, -100);
+This call ^ will run the right engine 100 percent forward, and the left engine 100 percent back.
+
+3) Change ()
+This method reverses the direction of the engines.
+myEngines.Change ();
+
+4) TurnOff ()
+Turns off the engines.
+myEngines.TurnOff ();
+
+5) Break ()
+Stop the engines: turn them on in the opposite direction for a moment to stop the movement immediately, then turn them off.
+myEngines.Break ();
+
+6) Speed ​​()
+Returns the speed of the robot: the average speed of the various engines.
+Returns the current travel speed.
+int SpeedOfEngines = myEngines.Speed ​​();
+SpeedOfEngines - a variable into which the engine speed will be entered.
+
+7) Speed ​​(add) // Acc (add) // Slow (add)
+These methods are used to change the speed of the engines.
+add - the speed to add / download (in percent).
+Slow - slows down the engines
+Acc - accelerates (rushes) the engines
+Hatch can be passed to a negative number and then it acts as a 'slow'. It's less convenient, don't do it.
+The slowdown slows down until it reaches zero. If you slow down even after the speed is already zero, it does not change and remains at 0.
+Speed ​​- changes the speed according to the number forwarded - positive for acceleration, negative for slowing down.
+Unlike the 'slow' method, in this method, if you slow down when the speed is 0 the speed becomes negative and the engines start to travel backwards.
+Examples:
+myEngines.Speed ​​(15); // accelerates speed by 15%
+myEngines.Speed ​​(-15); // Slows speed by 15%
+myEngines.Acc (15); Speed ​​up 15%
+myEngines.Slow (15); // Slows speed by 15%
+
+8) Forward () / Backward () / Turning ()
+Forward - Returns true value if the robot moves forward and false if it does not.
+Backward - Returns true if the robot is traveling backwards
+Turning - Returns true if the robot is spinning
+if (myEngines.Forward ())
+{
+* do somthing *
+}
+if (myEngines.Backward ())
+{
+* do somthing *
+}
+if (myEngines.Turning ())
+{
+* do somthing *
+}
+
+9) Slalom ()
+Drive the robot in the slalom (gliding path).
+myEngines.Slalom ();
+You can set the length, width, starting direction, and several steps.
+The full call for the method is:
+myEngines.Slalom (Length, Width, TurnRight, Steps);
+Lenght - Slalom loop length. A number between 1 and 100.
+Width - Loop width in slalom. A number between 1 and 100.
+TurnRight - True or False. When this is true it indicates that the slalom will start turning right, and when it is false it indicates that it will start turning left.
+Steps - Number of steps = loops in the slalom. Greater than one.
+
+The method can also be called without filling all of these fields, in the following ways:
+1) myEngines.Slalom (Length, Width, Steps); // In this case, no starting direction is set, and it will be right by default.
+    2) myEngines.Slalom (Length, Width, Turnright); // In this case, no steps have been defined, so only one step will be performed.
+    3) myEngines.Slalom (Length, Width); // In this case, no number of steps and no starting direction were defined. The starting direction will be to the right, and one step will be taken.
+    4) myEngines.Slalom (turnright); // One step will be taken in the specified direction, in the default dimensions.
+    5) myEngines.Slalom (Steps); // The default dimensions, which start on the right, will be marched and continue as many times as defined.
+6) myEngines.Slalom (); // One step will be taken in the default (right) and default dimensions.
+
+10) Replace ()
+This method replaces the engines with each other, so that now the right engine commands are run on the left engine and vice versa.
+myEngines.Replace ();
+If the method is activated twice, the engines return to their original state.
+
+11) DisReplace ()
+This method will cancel the previous method operation and align the engines regardless of their condition.
+myEngines.DisReplace ();
+
+***********
+Methods that can be operated on only one engine
+All the methods mentioned so far can only be operated on one engine.
+(Turning except).
+Access to the engine is as follows:
+myEngines.Right / myEngines.Left
+For example, the previous methods can be run on a single engine:
+myEngines.Right.Drive (100); / myEngines.Left.Drive (100);
+myEngines.Right.Change (); / myEngines.Left.Change ();
+myEngines.Right.TurnOff (); / myEngines.Left.TurnOff ();
+myEngines.Right.Break (); / myEngines.Left.Break ();
+int S = myEngines.Right.Speed ​​(); / int S = myEngines.Left.Speed ​​();
+myEngines.Right.Speed ​​(15); / myEngines.Left.Speed ​​(15);
+if (myEngines.Right.Forward ()) / if (myEngines.Left.Forward ())
+(Note: The last method ^ returns 'true' even when the engine is not running.)
+if (myEngines.Right.Backward ()) / if (myEngines.Left.Backward ())
+
+There are also other methods that can only be run on one engine:
+11) Reverse ()
+When this method is enabled, it causes all other commands on the engine to run:
+(If you drive the engine forward it will travel backwards)
+This is in case you have connected one of the engines upside down and you do not have the power to change the connection or change the software.
+myEngines.Right.Reverse (); / myEngines.Left.Reverse ();
+
+12) Straight ()
+This method works opposite to the Revers method, and it "aligns" the engine.
+myEngines.Right.Straight (); / myEngines.Left.Straight ();
