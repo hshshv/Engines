@@ -5,15 +5,19 @@
 class Engine
 {
   private:
-    int PlusPin;
-    int MinusPin;
+    int PlusOrAnalogPin;
+    int MinusOrDirectionPin;
     int DSpeed = 100;
     int MySpeed = 0;
     bool normal = true;
+    int MyCompensation = 0;
+    int SortOfDriver = 293; //defulte > L293d Engines Driver
   public:
-    Engine(int NPlusPin, int NMinusPin);
+    Engine(int NPlusOrAnalogPin, int NMinusOrDirectionPin, int NSortOfDriver);
+    Engine(int NPlusOrAnalogPin, int NMinusOrDirectionPin);
     Engine();
     int Speed();
+    int Compensation();
     void Speed(int add);
     void Drive(int Speed);
     void Drive(bool forward);
@@ -29,5 +33,6 @@ class Engine
     bool Backward();
     void Reverse();
     void Straight();
+    void Compensation(int NCompensation);
 };
 #endif

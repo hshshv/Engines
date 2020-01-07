@@ -1,11 +1,21 @@
 #include "Engine.h"
 
-Engine::Engine(int NPlusPin, int NMinusPin)
+Engine::Engine(int NPlusOrAnalogPin, int NMinusOrDirectionPin, int NSortOfDriver)
 {
-  PlusPin = NPlusPin;
-  MinusPin = NMinusPin;
-  pinMode(PlusPin, OUTPUT);
-  pinMode(MinusPin, OUTPUT);
+  PlusOrAnalogPin = NPlusOrAnalogPin;
+  MinusOrDirectionPin = NMinusOrDirectionPin;
+  pinMode(PlusOrAnalogPin, OUTPUT);
+  pinMode(MinusOrDirectionPin, OUTPUT);
+  if (NSortOfDriver == 293 || NSortOfDriver == 298)
+  {
+    SortOfDriver = NSortOfDriver;
+  }
+}
+
+Engine::Engine(int NPlusOrAnalogPin, int NMinusOrDirectionPin)
+{
+  Engine(NPlusOrAnalogPin, NMinusOrDirectionPin, 293);
+  //the defulte Driver is L293d
 }
 
 Engine::Engine()
@@ -24,15 +34,16 @@ void Engine::Speed(int add)//אם הוא נוסע אחורה ומאיצים - ה
   {
     return;
   }
-  if(!Forward())
+  if (!Forward())
   {
     add = add * (-1);
   }
-    Acc(add);
+  Acc(add);
 }
 
-void Engine::Drive(int Speed)
+void Engine::Drive(int Speed)//MAIN DRIVE
 {
+  Speed = Speed + MyCompensation;
   if (Speed > 100)
   {
     Speed = 100;
@@ -41,26 +52,45 @@ void Engine::Drive(int Speed)
   {
     Speed = -100;
   }
+  
   if (!normal)
   {
     Speed = Speed * (-1);
   }
 
   TurnOff();
-  MySpeed = Speed;
-  if (MySpeed > 0)
+
+  MySpeed = Speed - MyCompensation;
+
+  if (SortOfDriver == 293)
   {
-    analogWrite(PlusPin, map(Speed, 0, 100, 0, 255));
+    if (MySpeed > 0)
+    {
+      analogWrite(PlusOrAnalogPin, map(Speed, 0, 100, 0, 255));
+    }
+    if (MySpeed < 0)
+    {
+      analogWrite(MinusOrDirectionPin, map(abs(Speed), 0, 100, 0, 255));
+    }
   }
-  if (MySpeed < 0)
+
+  if (SortOfDriver == 298)
   {
-    analogWrite(MinusPin, map(abs(Speed), 0, 100, 0, 255));
+    if (MySpeed > 0)
+    {
+      digitalWrite(MinusOrDirectionPin, HIGH);
+    }
+    else
+    {
+      digitalWrite(MinusOrDirectionPin, LOW);
+    }
+    analogWrite(PlusOrAnalogPin, map(Speed, 0, 100, 0, 255));
   }
 }
 
 void Engine::Drive(bool forward)
 {
-  if(MySpeed == 0)
+  if (MySpeed == 0)
   {
     MySpeed = DSpeed;
   }
@@ -98,7 +128,7 @@ void Engine::Acc()
 
 void Engine::Acc(int Speed)//אם הוא נוסע אחרוה ומאיצים - הוא נוסע אחורה יותר מהר.
 {
-  if(MySpeed == 0 && Speed < 0)
+  if (MySpeed == 0 && Speed < 0)
   {
     return;
   }
@@ -124,8 +154,8 @@ void Engine::Slow(int Speed)
 
 void Engine::TurnOff()
 {
-  digitalWrite(PlusPin, LOW);
-  digitalWrite(MinusPin, LOW);
+  analogWrite(PlusOrAnalogPin, 0);
+  analogWrite(MinusOrDirectionPin, 0);
   MySpeed = 0;
 }
 
@@ -146,5 +176,15 @@ void Engine::Straight()
 
 bool Engine::Backward()
 {
-  return(MySpeed < 0);
+  return (MySpeed < 0);
+}
+
+void Engine::Compensation(int NCompensation)
+{
+  MyCompensation = NCompensation;
+}
+
+int Engine::Compensation()
+{
+  return (MyCompensation);
 }
