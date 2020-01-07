@@ -40,7 +40,7 @@ SpeedOfEngines - a variable into which the engine speed will be entered.
 
 7) Speed ​​(add) // Acc (add) // Slow (add)
 These methods are used to change the speed of the engines.
-add - the speed to add / download (in percent).
+add - the speed to add / reduce (in percent).
 Slow - slows down the engines
 Acc - accelerates (rushes) the engines
 Hatch can be passed to a negative number and then it acts as a 'slow'. It's less convenient, don't do it.
