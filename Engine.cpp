@@ -12,15 +12,14 @@ Engine::Engine(int NPlusOrAnalogPin, int NMinusOrDirectionPin, int NSortOfDriver
   }
 }
 
-Engine::Engine(int NPlusOrAnalogPin, int NMinusOrDirectionPin)
+Engine::Engine(int NPlusOrAnalogPin, int NMinusOrDirectionPin):Engine(NPlusOrAnalogPin, NMinusOrDirectionPin, 293)
 {
-  Engine(NPlusOrAnalogPin, NMinusOrDirectionPin, 293);
   //the defulte Driver is L293d
 }
 
-Engine::Engine()
+Engine::Engine():Engine(5, 6)
 {
-  Engine(5, 6);
+  
 }
 
 int Engine::Speed()//absulot value
